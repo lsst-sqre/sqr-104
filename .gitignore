@@ -3,3 +3,7 @@ _build/
 .tox/
 venv/
 .venv/
+# Generated
+*.html
+*.pdf
+*.tex

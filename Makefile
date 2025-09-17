@@ -1,26 +1,43 @@
-.PHONY:
-init:
-	pip install tox pre-commit
-	pre-commit install
+container = athornton/export-org:latest
+target = 3000bots
 
-.PHONY:
-html:
-	tox run -e html
+.PHONY: help
+help:
+	@echo "Make targets for export-org $(target):"
+	@echo ""
+	@echo "make pdf - Make PDF of $(target)"
+	@echo "make reveal - Make Reveal.js version of $(target)"
+	@echo "make site - Make Reveal.js website directory"
+	@echo "make clean - Remove artifacts"
 
-.PHONY:
-lint:
-	tox run -e lint,linkcheck
+.PHONY: docker-container
+docker-container:
+	docker run --rm $(container) /bin/true || \
+	docker buildx build -t $(container) .
 
-.PHONY:
-add-author:
-	tox run -e add-author
+$(target).pdf: $(target).org docker-container
+	./exporter.sh pdf $(target).org
 
-.PHONY:
-sync-authors:
-	tox run -e sync-authors
+$(target).html: $(target).org docker-container
+	./exporter.sh html $(target).org
 
-.PHONY:
+pdf: $(target).pdf
+
+html: $(target).html
+
+site: pdf html
+	@mkdir -p ./site/assets
+	@mkdir -p ./site/css
+	cp $(target).html ./site/index.html
+	cp $(target).pdf ./site/$(target).pdf
+	cp -rp css ./site
+	cp -rp assets ./site
+	mkdir _build
+	mv site _build/html
+
 clean:
-	rm -rf _build
-	rm -rf .technote
-	rm -rf .tox
+	-@rm -rf ./_build
+	-@rm -f ./$(target).html
+	-@rm -f ./$(target).pdf
+	-@rm -f ./$(target).tex
+	-@docker rmi athornton/export-org
