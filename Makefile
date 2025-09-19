@@ -30,10 +30,11 @@ site: pdf html
 	@mkdir -p ./site/css
 	cp $(target).html ./site/index.html
 	cp $(target).pdf ./site/$(target).pdf
-	cp -rp css ./site
-	cp -rp assets ./site
-	mkdir _build
-	mv site _build/html
+	cp -rp ./css ./site
+	cp -rp ./assets ./site
+	-@rm -rf ./_build
+	@mkdir -p ./_build
+	mv site ./_build/html
 
 clean:
 	-@rm -rf ./_build
