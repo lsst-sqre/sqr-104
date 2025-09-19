@@ -246,9 +246,13 @@ You're going to want to use something similar.
 * Summary of Scaling Lessons
 
 - Use CHPv5.
+- Reduce polling frequency where you can get away with it.
+- Quota internal resource usage.
+  - Persistent storage
+  - CPU and memory
+  - Resource-intensive internal services
 - Onboarding and offboarding are important.
   Think them through before the users arrive /en masse/ and be prepared to handle surges.
-- Have some kind of internal resource-limiting service so your notebook users can't crush your other services.
 - Can you differentiate deliberate abuse from clueless enthusiasm?  Do you care to?
 
 Sometimes you have to downgrade a few users' experience to keep the overall experience tolerable for everyone.
