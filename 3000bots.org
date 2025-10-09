@@ -31,11 +31,11 @@ The primary catalog will be about 15PB, and total data holdings about 500PB.
 
 * Rubin Science Platform
 
-Much of my work is on the Rubin Science Platform (henceforth, "RSP").  It provides services to the Rubin science community:
+Much of my work is on the Rubin Science Platform (henceforth, "RSP").  It provides hosted ad-hoc analytics to the Rubin science community:
 
 - Jupyter notebooks with a kernel containing our data analysis pipelines.
 - A search-and-visualization tool for Rubin astronomical data.
-- API access to Rubin astronomical data.
+- API access to Rubin astronomical data and compute.
 - Various other services.
 
 My work often revolves around the Jupyter notebook service, and scaling that is what this talk is about.
@@ -55,59 +55,31 @@ My work often revolves around the Jupyter notebook service, and scaling that is 
 
 On June 30, 2025, we had our first public release of observational catalog data.
 
-The primary site for astronomical community access is [[https://data.lsst.cloud][our Internet Data Facility hosted by Google]].
+The primary site for astronomical community access is [[https://data.lsst.cloud][this deployment is hosted at Google Cloud]].
 
-There are other Rubin Science Platform sites; this talk is only concerned with our Google Cloud Platform-hosted production instance and its integration counterpart where we did the actual scaletesting.
-
-** Usage expectations
-
-On the RSP at Google, what you get is a four-core, 16GB Lab pod.
-
-This is intended to be the equivalent of a (fairly anemic) laptop in the cloud, for lightweight hypothesis investigation, not a supercomputer.
-
-For things that need significant amounts of memory or CPU, the user is expected to use a batch system instead.
+There are other Rubin Science Platform deployments on-premises; this talk is only concerned with our Google Cloud Platform-hosted production instance and its integration counterpart where we did the actual scaletesting.
 
 ** Site setup
 
-We run on Google Kubernetes Engine, with autoscaling enabled.
+We run our JupyterLab based service on Google Kubernetes Engine, with autoscaling enabled.
 
-Each node has 32 cores and 128GB of memory (n2-standard-32).
+Each node has 32 cores and 128GB of memory (n2-standard-32, investigating Autopilot) supporting a typical user pod of 4 cores / 16 GB RAM.
 
-On a typical Wednesday morning (17 Sep 2025), we had 123 users on 5 Lab nodes.
+The main advantage of this environment is the ability to run analyses on our compute without having to download the data, which quickly becomes prohibitive at Rubin scale.
 
 [[./assets/nodes.png]]
 
 * Scale Testing
 
-There are about twenty thousand astronomers worldwide.
-Half of those are from US or Chilean institutions and therefore can get an account on the Google RSP if they want one.
-(It's more complicated than this but that's in the ballpark.)
+We estimate our eventual user base (professional astronomers with data rights) to be about 10,000 users.
 
-Many of those ten thousand don't do astronomy that Rubin Observatory will facilitate (e.g. radio astronomers).
+For Data Preview 1 we set a scaletesting goal of 3,000 concurrent users; this was a a deliverate over-estimated of the expected users in order to surface scaling issues.
 
-We somewhat arbitrarily took three thousand as an upper bound, as "more people than will likely try out DP1".
-
-** Population assumptions
-
-We expected our Data Preview 1 audience to be those people really excited about Rubin, who wanted to understand our processing pipelines in advance of taking real survey data.
-
-Thus we expected them to be somewhat more sophisticated users than our eventual mid-operations median user would be.
-
-** Actual numbers
-
-A few days before the June 30 DP1 date, we had 998 non-bot users on the production GKE-hosted RSP.
-This was measured as "number of home directories" and therefore only counts users who logged in to the system at least once.
-
-On July 8, we had 1165 non-bot users; on August 18, we had 1295; September 17, 1401.
-15% of our users signed up in the last week before DP1.
-
-Our account approval process was (and is) our rate-limiting step: manual approval of each account, to ensure that it's someone with legitimate data rights, is cumbersome.
-
-Our highest observed concurrency thus far has been about 550 non-bot users.
+Indeed, 3 months after DP1 we have 1,500 registered users, peaking at ~350 concurrent active labs.
 
 * Testing methodology
 
-We have a service we created, called =mobu=, that is able to run various payloads (mostly Jupyter notebooks) within the RSP.
+We used our service, called =mobu=, that is able to run various payloads (mostly Jupyter notebooks) within the RSP.
 
 It is mostly used for automated regression testing and for exercising new features as the analysis pipelines have evolved.
 
@@ -119,7 +91,9 @@ Mobu uses the Hub API to establish a JupyterLab session and then can run Python 
 Our victory condition was to get to 3000 simultaneous users each running a trivial Python workload.
 We did not expect to succeed immediately.
 
-We began in late January 2025, and finished our JupyterHub/Lab testing in late April, doing one three-hour scaletesting session a week.
+We began in late January 2025, and finished our JupyterHub/Lab testing in late April, doing one three-hour scaletesting session a week on our integration cluster.
+
+Incidentally, scale-testing is a fun Friday afternoon team activity; recommended.
 
 *** Initial Concurrency Results
 
@@ -233,13 +207,9 @@ You're going to want to use something similar.
 
 * Problematic Usage
 
-- Cryptominers: Google warned us based on their outbound connection patterns.
-  With four cores and no GPU, I'm pretty sure they didn't make much money.
-- We might not have noticed otherwise, because a user eating their entire CPU allocation for days on end isn't necessarily suspicious.
-  (It is, however, indicative that they /should/ be using batch instead.)
-  Naïve users will indeed just hammer the system.
-  One user looped over a huge result set, asking for a "postage stamp" image for every single object.
-  That was two cutouts a second, and would have taken months to complete.
+- Yes, somebody did try to mine crypto. With four cores and no GPU, I'm pretty sure they didn't make much money. Google is great at detecting this, so don't try this at home kids.
+- There were some real outlier users of our APIs, for example those harvesting data to build training sets. We had to scale-up some of our back-end workers to allow them to proceed at a reasonable time, without crowding out other users.
+- API rate limits can have some perverse effects, for example penalising people who do short, well-thought-out catalog queries - which are what you want! Concurrent queries in flight are a fairer measure.
 - You absolutely need disk quotas if you provide per-user persistent storage.
   Before we imposed quotas, one user used more disk space than all the thousand others combined.
 
