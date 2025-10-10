@@ -26,8 +26,23 @@ I work for NSF-DOE Vera C. Rubin Observatory (henceforth, "Rubin Observatory" or
 It's an optical-band telescope with an 8.4m mirror, located on Cerro Pachon in Chile.
 We will begin survey operations by the end of the year.
 
+It contains both the largest single piece of glass and the largest digital camera ever built (that we know of).
+
+* Camera and Data Volume
+
+The camera is 3.2 GPx; it will take about 1000 30-second exposures a night every night for 10 years.
+The telescope field of view is 3.5 degrees, or seven full moons side by side.
+
 During the ten-year survey we will collect 15-20TB per night of astronomical data.
 The primary catalog will be about 15PB, and total data holdings about 500PB.
+
+* Observatory Seen With Night Sky
+
+[[./assets/trails.jpg]]
+
+* Night Sky Seen With Observatory ([[https://skyviewer.app][Skyviewer]])
+
+[[./assets/zoom/zoom.gif]]
 
 * Rubin Science Platform
 
@@ -55,7 +70,7 @@ My work often revolves around the Jupyter notebook service, and scaling that is 
 
 On June 30, 2025, we had our first public release of observational catalog data.
 
-The primary site for astronomical community access is [[https://data.lsst.cloud][this deployment is hosted at Google Cloud]].
+The primary site for astronomical community access is [[https://data.lsst.cloud][this deployment hosted at Google Cloud]].
 
 There are other Rubin Science Platform deployments on-premises; this talk is only concerned with our Google Cloud Platform-hosted production instance and its integration counterpart where we did the actual scaletesting.
 
@@ -73,13 +88,13 @@ The main advantage of this environment is the ability to run analyses on our com
 
 We estimate our eventual user base (professional astronomers with data rights) to be about 10,000 users.
 
-For Data Preview 1 we set a scaletesting goal of 3,000 concurrent users; this was a a deliverate over-estimated of the expected users in order to surface scaling issues.
+For Data Preview 1 we set a scaletesting goal of 3,000 concurrent users; this was a a deliberate over-estimate of the expected users in order to surface scaling issues.
 
-Indeed, 3 months after DP1 we have 1,500 registered users, peaking at ~350 concurrent active labs.
+3 months after DP1 we have 1,500 registered users, peaking under 500 concurrent active labs.
 
 * Testing methodology
 
-We used our service, called =mobu=, that is able to run various payloads (mostly Jupyter notebooks) within the RSP.
+We used our service, called =mobu=, that is able to run various payloads (primarily Jupyter notebooks) within the RSP.
 
 It is mostly used for automated regression testing and for exercising new features as the analysis pipelines have evolved.
 
@@ -114,7 +129,7 @@ Scaletesting in February and March was devoted to chasing down timeouts and inte
 
 - We found race conditions in our controller code that would have been difficult to find in a reasonably-loaded system.
 - We had to use a less aggressive polling cadence to reconcile the controller's view of the world with reality.
-- We realized that our practice of cloning tutorial repositories into user labs at startup was hitting GitHub rate limit problems at scale.
+- We realized that our practice of cloning tutorial repositories into user labs at startup was hitting GitHub rate limits at scale.
 
 More memory and CPU for mobu and the Hub helped, but we still were getting timeouts from Lab-to-Hub communications.
 
@@ -138,7 +153,7 @@ This will allow scaling the Hub horizontally, and we intend to be early and enth
 
 *** Other things we found
 
-[[https://github.com/IBM/jupyter-tools/blob/87296dd13ab43b905c7657d17e3eac7371e90fc1/docs/configuration.md][IBM's jupyter-tools]] has some very useful tuning advice specifically for stress-testing Hub.
+[[https://github.com/IBM/jupyter-tools/blob/87296dd13ab43b905c7657d17e3eac7371e90fc1/docs/configuration.md][IBM's jupyter-tools]] has some very useful tuning advice specifically for stress-testing JupyterHub.
 This is where, for instance, we got our recommendations for culling and activity polling.
 
 GKE imposes a 200-requests-per-second limit on the K8s control plane.
@@ -158,10 +173,10 @@ At this point, with the DP1 deadline approaching, we declared victory and moved 
 
 * Data Preview 1 Reality
 
-We got 500-ish simultaneous users when Data Preview 1 went live.
-That was within our expectations, and maybe even a little disappointing (even if it's still more than two percent of all the professional astronomers in the world).
+We got close to 500 users attempting to spawn Labs when Data Preview 1 went live.
+That was within our expectations, and maybe even a little disappointing (even if it's still about two percent of all the professional astronomers in the world).
 
-This went less smoothly than we had hoped: spawn failures started to occur at a far lower user count than we had achieved in scaletesting.
+This went less smoothly than we had hoped: spawn failures started to occur at a far lower user count (about 300) than we had achieved in scaletesting.
 
 The problem was in the proxy, not the Hub or the controller.
 It wasn't the memory exhaustion we'd already seen and fixed.
@@ -180,7 +195,7 @@ Human users, despite the fact that we give them a perfectly good menu item to sa
 CHP v5 addresses this problem adequately.
 After adopting v5, that concurrency problem vanished and we haven't seen it again.
 
-At the moment we are coping well with 500-ish simultaneous users doing science work.
+At the moment we are coping well with 350-ish simultaneous users doing science work.
 
 ** Post-DP1 lessons
 
@@ -207,9 +222,9 @@ You're going to want to use something similar.
 
 * Problematic Usage
 
-- Yes, somebody did try to mine crypto. With four cores and no GPU, I'm pretty sure they didn't make much money. Google is great at detecting this, so don't try this at home kids.
-- There were some real outlier users of our APIs, for example those harvesting data to build training sets. We had to scale-up some of our back-end workers to allow them to proceed at a reasonable time, without crowding out other users.
-- API rate limits can have some perverse effects, for example penalising people who do short, well-thought-out catalog queries - which are what you want! Concurrent queries in flight are a fairer measure.
+- Yes, some people did try to mine crypto. With four cores and no GPU, I'm pretty sure they didn't make much money. Google is great at detecting this, so don't try this at home, kids.
+- There were some real outlier users of our APIs; e.g., those harvesting data to build training sets. We had to scale-up some of our back-end workers to allow them to proceed at a reasonable pace without crowding out other users.
+- API rate limits can have some perverse effects; e.g., penalising people who do short, well-thought-out catalog queries - which are what you want! Concurrent queries in flight are a fairer measure.
 - You absolutely need disk quotas if you provide per-user persistent storage.
   Before we imposed quotas, one user used more disk space than all the thousand others combined.
 
