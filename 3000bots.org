@@ -5,7 +5,6 @@
 #+REVEAL_THEME: white
 #+REVEAL_EXTRA_CSS: ./css/local.css
 #+REVEAL_INIT_OPTIONS: slideNumber: "c/t"
-#+REVEAL_PLUGINS: (notes highlight)
 #+LATEX_COMPILER: lualatex
 #+LATEX_CLASS_OPTIONS: [10pt]
 #+LATEX_HEADER: \usepackage{fontspec}
@@ -23,7 +22,7 @@
 
 I work for NSF-DOE Vera C. Rubin Observatory (henceforth, "Rubin Observatory" or just "Rubin").
 
-* Observatory Seen With Night Sky
+* [[https://www.hernanstockebrand.com/][Observatory Seen With Night Sky]]
 
 [[./assets/trails.jpg]]
 
@@ -32,7 +31,7 @@ It's an optical-band telescope with an 8.4m mirror, located on Cerro Pachon in C
 It contains both the largest single piece of glass and the largest digital camera ever built (that we know of).
 #+END_NOTES
 
-* [[https://www.hernanstockebrand.com/][Night Sky Seen With Observatory]]
+* [[https://skyviewer.app][Night Sky Seen With Observatory]]
 
 #+BEGIN_NOTES
 We will begin survey operations around the end of the year.
@@ -41,7 +40,7 @@ The camera is 3.2 GPx; it will take about 1000 30-second exposures a night every
 
 #+REVEAL_HTML: <iframe width="885" height="498" src="https://d3opzdukpbxlns.cloudfront.net/cddc1f02-40b2-475e-8ebd-93502d86e3af/d53bb6cf5d464f38bd47bf34ac0b9c98.preview.mp4?response-content-type=video%2Fmp4%3B%20time%3D20251017162620&Expires=1760832000&Signature=bZ2R8i55ogTKDfg-vF2GiC3rKKGRNSoOR06xx~vWwNmWdFvpgpaijzqy8rtL9ZQOYBagD0B5mbfhH~xZpQJDlh9H3mYCH~-blcuZ~q96PkkmF-sTDH2lZaQKxHD7LMRPoS8WOGQ7suRKE3Ti0JuAG6KMGIM4JdWVZxKatptsC6T~U1Dd1OA3~5eCChQ47JlpPMcps0Ds1RJZyY6iMbKN0iapY7Feagqrsn46ArkaUDpnA5vuabbvbSI7eQYhS0XzAnWJ97sE7gXIw0iiTnB6m8L3JnQL~Q-Kt7ARBiGPMCaMwr1oR5teASDWvdk8aWilXkHL8fjxwOQfq9FWpxGt3Q__&mute=1&Key-Pair-Id=APKAI33AGAEAYCXFBDTA&mute=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-* [[https://www.hernanstockebrand.com/][Night Sky Seen With Observatory]]
+* [[https://skyviewer.app][Night Sky Seen With Observatory]]
 
 #+REVEAL_HTML: <iframe width="885" height="498" src="https://d3opzdukpbxlns.cloudfront.net/cddc1f02-40b2-475e-8ebd-93502d86e3af/c082f2d7da8b47a298c01a8ddc29e62c.preview.mp4?response-content-type=video%2Fmp4%3B%20time%3D20251017193939&Expires=1760832000&Signature=PE~dObHVeZx2glLQUX-ZMk32yfB-L6kFWgZSs5VGOQlunKLYUixgcdF5atqznWPLRBnXqXXKtHNZjHJrZ2zDg8Dx6yJjsLrwBQiV14NDY9IYFD-67s7yfhfZtE62Kh32EYnltEQC2NNzCPTbPSjju3iQmzcDC8EeMURUToPqWZAbKBbNfTg0hmLR-Zbmk9~sz71UQHqXrsYnVI6yQPauisiPLxAJ4O~sv-JJ3SnLcrQiosAKoFJx6japnFmE0irv4PjMxN1X1-3hf2mjXkbNZb0byppcWnfrrSDZntDmRbqxsQiia9IU2fLSieI1O3TzsG9WLZOjhyPDHYEVMS-LsA__&mute=1&Key-Pair-Id=APKAI33AGAEAYCXFBDTA" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
