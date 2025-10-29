@@ -252,7 +252,9 @@ Sometimes you have to downgrade a few users' experience to keep the overall expe
 
 * Links
 
+- [[https://rubinobservatory.org/for-scientists/rubin-101/key-numbers][Rubin Key Numbers]]
 - [[https://github.com/lsst-sqre/nublado][Nublado]] [[https://nublado.lsst.io][(docs)]]
 - [[https://github.com/lsst-sqre/phalanx][Phalanx]] [[https://phalanx.lsst.io][(docs)]]
 - [[https://github.com/lsst-sqre/gafaelfawr][Gafaelfawr]] [[https://gafaelfawr.lsst.io][(docs)]]
+- [[https://athornton.github.io/rubin-talk][General Rubin Observatory talk]] [[https://github.com/athornton/rubin-talk][(source)]]
 - [[https://ls.st/3000bots][This talk]] [[./3000bots.pdf][(pdf)]] [[https://github.com/lsst-sqre/sqr-104/blob/main/3000bots.org][(source)]]
